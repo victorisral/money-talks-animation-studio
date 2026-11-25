@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Talks Animation Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080a0d;color:#f5f2ea;font-family:Arial,sans-serif}
+header{padding:25px;background:#101827;border-bottom:1px solid #30394b}
+h1{font-size:24px;margin:0}
+header p{color:#aaa}
+main{max-width:850px;margin:auto;padding:20px}
+.card{background:#101827;border:1px solid #30394b;border-radius:14px;padding:20px;margin-bottom:20px}
+h2{color:#a99aff;font-size:18px}
+label{display:block;margin:15px 0 7px}
+input,textarea,select{width:100%;padding:13px;border-radius:8px;border:1px solid #414c60;background:#080a0d;color:white;font-size:15px}
+textarea{min-height:110px}
+button{background:#6a5acd;color:white;border:0;padding:13px 18px;border-radius:8px;font-weight:bold;margin-top:14px}
+.output{white-space:pre-wrap;line-height:1.6;color:#ddd}
+footer{text-align:center;color:#777;padding:25px}
+</style>
+</head>
+<body>
+<header>
+<h1>MONEY TALKS ANIMATION STUDIO</h1>
+<p>Your personal animation production workspace.</p>
+</header>
+<main>
+<section class="card">
+<h2>01 / Story Generator</h2>
+<label>Video topic</label>
+<input id="topic" placeholder="Enter your video topic">
+<label>Video duration</label>
+<select id="duration">
+<option>30 seconds</option>
+<option>60 seconds</option>
+<option>5 minutes</option>
+<option>10 minutes</option>
+</select>
+<button onclick="generate()">Generate production brief</button>
+<div id="result" class="output"></div>
+</section>
+<section class="card">
+<h2>02 / Character Identity</h2>
+<p>Maintain consistent character designs across scenes.</p>
+<label>Character description</label>
+<textarea id="character" placeholder="Describe your main stickman character..."></textarea>
+</section>
+<section class="card">
+<h2>03 / Scene Planner</h2>
+<label>Scene description</label>
+<textarea id="scene" placeholder="Describe what happens in this scene..."></textarea>
+<button onclick="saveScene()">Save scene locally</button>
+<div id="scenes" class="output"></div>
+</section>
+</main>
+<footer>MONEY TALKS ANIMATION STUDIO · BUILD 001</footer>
+<script>
+function generate(){
+const topic=document.getElementById('topic').value;
+const duration=document.getElementById('duration').value;
+if(!topic.trim()){alert('Enter a video topic first.');return;}
+document.getElementById('result').textContent=
+'PRODUCTION BRIEF\n\nTopic: '+topic+
+'\nDuration: '+duration+
+'\n\nNext steps:\n1. Write narration.\n2. Divide narration into scenes.\n3. Create character prompts.\n4. Generate animation shots.\n5. Add voiceover and sound design.';
+}
+function saveScene(){
+const scene=document.getElementById('scene').value;
+if(!scene.trim()){alert('Enter a scene description.');return;}
+const old=localStorage.getItem('moneyScenes')||'';
+const updated=old+'\n\nSCENE '+((old.match(/SCENE /g)||[]).length+1)+'\n'+scene;
+localStorage.setItem('moneyScenes',updated);
+document.getElementById('scenes').textContent=updated;
+document.getElementById('scene').value='';
+}
+document.getElementById('scenes').textContent=localStorage.getItem('moneyScenes')||'No scenes saved yet.';
+</script>
+</body>
+</html>
