@@ -3,80 +3,142 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Money Talks Animation Studio</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#080a0d;color:#f5f2ea;font-family:Arial,sans-serif}
-header{padding:25px;background:#101827;border-bottom:1px solid #30394b}
-h1{font-size:24px;margin:0}
+header{background:#101827;padding:25px;border-bottom:1px solid #343b50}
+h1{font-size:23px;margin:0}
 header p{color:#aaa}
-main{max-width:850px;margin:auto;padding:20px}
-.card{background:#101827;border:1px solid #30394b;border-radius:14px;padding:20px;margin-bottom:20px}
-h2{color:#a99aff;font-size:18px}
-label{display:block;margin:15px 0 7px}
+main{max-width:900px;margin:auto;padding:20px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+nav button{margin:0}
+.card{background:#101827;border:1px solid #30394b;border-radius:14px;padding:20px;margin-bottom:18px}
+h2{color:#a99aff;font-size:19px}
+label{display:block;margin:14px 0 7px;color:#ddd}
 input,textarea,select{width:100%;padding:13px;border-radius:8px;border:1px solid #414c60;background:#080a0d;color:white;font-size:15px}
-textarea{min-height:110px}
-button{background:#6a5acd;color:white;border:0;padding:13px 18px;border-radius:8px;font-weight:bold;margin-top:14px}
-.output{white-space:pre-wrap;line-height:1.6;color:#ddd}
-footer{text-align:center;color:#777;padding:25px}
+textarea{min-height:90px}
+button{background:#6a5acd;color:white;border:0;padding:12px 17px;border-radius:8px;font-weight:bold;margin-top:13px}
+.secondary{background:#28354a}
+.output{white-space:pre-wrap;line-height:1.6;color:#ddd;margin-top:15px;overflow-wrap:anywhere}
+small{color:#999}
 </style>
 </head>
 <body>
 <header>
 <h1>MONEY TALKS ANIMATION STUDIO</h1>
-<p>Your personal animation production workspace.</p>
+<p>Professional animation production workspace · Build 002</p>
 </header>
 <main>
-<section class="card">
-<h2>01 / Story Generator</h2>
-<label>Video topic</label>
-<input id="topic" placeholder="Enter your video topic">
-<label>Video duration</label>
+<nav>
+<button onclick="show('characters')">Characters</button>
+<button onclick="show('stories')">Stories</button>
+<button onclick="show('scenes')">Scene Builder</button>
+</nav>
+
+<section id="characters" class="card">
+<h2>01 / Character Studio</h2>
+<p>Create a reusable character identity for your animations.</p>
+<label>Character name</label>
+<input id="cname" placeholder="Example: Marcus">
+<label>Character type</label>
+<select id="ctype">
+<option>Minimalist stickman</option>
+<option>2D cartoon human</option>
+<option>3D animated human</option>
+<option>Custom character</option>
+</select>
+<label>Head and face</label>
+<textarea id="face" placeholder="Describe the head, face and expression"></textarea>
+<label>Body and clothing</label>
+<textarea id="body" placeholder="Describe body shape, clothing and accessories"></textarea>
+<label>Personality</label>
+<textarea id="personality" placeholder="Describe the character's personality"></textarea>
+<button onclick="saveCharacter()">Save character</button>
+<button class="secondary" onclick="makeCharacterPrompt()">Generate identity prompt</button>
+<div id="characterOutput" class="output"></div>
+<div id="characterList" class="output"></div>
+</section>
+
+<section id="stories" class="card" hidden>
+<h2>02 / Story Studio</h2>
+<label>Video title</label>
+<input id="title" placeholder="Enter your documentary title">
+<label>Target duration</label>
 <select id="duration">
 <option>30 seconds</option>
 <option>60 seconds</option>
 <option>5 minutes</option>
 <option>10 minutes</option>
 </select>
-<button onclick="generate()">Generate production brief</button>
-<div id="result" class="output"></div>
+<label>Story idea</label>
+<textarea id="idea" placeholder="Describe your video idea"></textarea>
+<button onclick="makeStory()">Create story brief</button>
+<div id="storyOutput" class="output"></div>
 </section>
-<section class="card">
-<h2>02 / Character Identity</h2>
-<p>Maintain consistent character designs across scenes.</p>
-<label>Character description</label>
-<textarea id="character" placeholder="Describe your main stickman character..."></textarea>
-</section>
-<section class="card">
-<h2>03 / Scene Planner</h2>
+
+<section id="scenes" class="card" hidden>
+<h2>03 / Scene Builder</h2>
+<label>Scene number</label>
+<input id="number" placeholder="Scene 01">
 <label>Scene description</label>
-<textarea id="scene" placeholder="Describe what happens in this scene..."></textarea>
-<button onclick="saveScene()">Save scene locally</button>
-<div id="scenes" class="output"></div>
+<textarea id="description" placeholder="Describe what happens in this scene"></textarea>
+<label>Camera movement</label>
+<select id="camera">
+<option>Slow cinematic zoom</option>
+<option>Wide establishing shot</option>
+<option>Close-up</option>
+<option>Tracking shot</option>
+<option>Static shot</option>
+</select>
+<label>Lighting and atmosphere</label>
+<textarea id="lighting" placeholder="Describe the lighting and mood"></textarea>
+<button onclick="makeScene()">Generate scene prompt</button>
+<div id="sceneOutput" class="output"></div>
 </section>
 </main>
-<footer>MONEY TALKS ANIMATION STUDIO · BUILD 001</footer>
 <script>
-function generate(){
-const topic=document.getElementById('topic').value;
-const duration=document.getElementById('duration').value;
-if(!topic.trim()){alert('Enter a video topic first.');return;}
-document.getElementById('result').textContent=
-'PRODUCTION BRIEF\n\nTopic: '+topic+
-'\nDuration: '+duration+
-'\n\nNext steps:\n1. Write narration.\n2. Divide narration into scenes.\n3. Create character prompts.\n4. Generate animation shots.\n5. Add voiceover and sound design.';
+function show(id){
+['characters','stories','scenes'].forEach(x=>{
+document.getElementById(x).hidden=x!==id;
+});
 }
-function saveScene(){
-const scene=document.getElementById('scene').value;
-if(!scene.trim()){alert('Enter a scene description.');return;}
-const old=localStorage.getItem('moneyScenes')||'';
-const updated=old+'\n\nSCENE '+((old.match(/SCENE /g)||[]).length+1)+'\n'+scene;
-localStorage.setItem('moneyScenes',updated);
-document.getElementById('scenes').textContent=updated;
-document.getElementById('scene').value='';
+function saveCharacter(){
+let c={
+name:cname.value,type:ctype.value,face:face.value,
+body:body.value,personality:personality.value
+};
+if(!c.name.trim()){alert('Enter a character name');return;}
+let list=JSON.parse(localStorage.getItem('mtCharacters')||'[]');
+list.push(c);
+localStorage.setItem('mtCharacters',JSON.stringify(list));
+characterList.textContent='Saved characters:\n'+list.map(x=>x.name+' — '+x.type).join('\n');
 }
-document.getElementById('scenes').textContent=localStorage.getItem('moneyScenes')||'No scenes saved yet.';
+function makeCharacterPrompt(){
+characterOutput.textContent=
+'CHARACTER IDENTITY PROMPT\n\nName: '+cname.value+
+'\nCharacter type: '+ctype.value+
+'\nFace: '+face.value+
+'\nBody and clothing: '+body.value+
+'\nPersonality: '+personality.value+
+'\n\nMaintain exactly the same character design, proportions, facial details, clothing and visual identity in every scene. Do not redesign or replace the character.';
+}
+function makeStory(){
+storyOutput.textContent='STORY PRODUCTION BRIEF\n\nTitle: '+title.value+
+'\nDuration: '+duration.value+
+'\nConcept: '+idea.value+
+'\n\nDevelop a compelling opening hook, logical story progression, engaging visual moments and a memorable conclusion.';
+}
+function makeScene(){
+sceneOutput.textContent='ANIMATION SCENE PROMPT\n\nScene: '+number.value+
+'\nAction: '+description.value+
+'\nCamera: '+camera.value+
+'\nLighting: '+lighting.value+
+'\n\nMaintain consistent character identity throughout the animation. Cinematic composition, smooth movement, clear storytelling and professional visual quality.';
+}
+let saved=JSON.parse(localStorage.getItem('mtCharacters')||'[]');
+characterList.textContent=saved.length?'Saved characters:\n'+saved.map(x=>x.name+' — '+x.type).join('\n'):'No characters saved yet.';
 </script>
 </body>
 </html>
