@@ -3,142 +3,360 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Money Talks Animation Studio</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#080a0d;color:#f5f2ea;font-family:Arial,sans-serif}
-header{background:#101827;padding:25px;border-bottom:1px solid #343b50}
-h1{font-size:23px;margin:0}
-header p{color:#aaa}
-main{max-width:900px;margin:auto;padding:20px}
+header{background:#101827;padding:24px;border-bottom:1px solid #343b50}
+h1{font-size:22px;margin:0}
+header p{color:#aaa;font-size:13px}
+main{max-width:950px;margin:auto;padding:18px}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-nav button{margin:0}
-.card{background:#101827;border:1px solid #30394b;border-radius:14px;padding:20px;margin-bottom:18px}
+button{background:#6a5acd;color:white;border:0;padding:12px 15px;border-radius:8px;font-weight:bold;cursor:pointer}
+nav button{flex:1}
+.card{background:#101827;border:1px solid #30394b;border-radius:13px;padding:19px;margin-bottom:17px}
 h2{color:#a99aff;font-size:19px}
-label{display:block;margin:14px 0 7px;color:#ddd}
-input,textarea,select{width:100%;padding:13px;border-radius:8px;border:1px solid #414c60;background:#080a0d;color:white;font-size:15px}
-textarea{min-height:90px}
-button{background:#6a5acd;color:white;border:0;padding:12px 17px;border-radius:8px;font-weight:bold;margin-top:13px}
+h3{font-size:15px;color:#ddd}
+label{display:block;margin:14px 0 7px;font-size:13px;color:#ddd}
+input,textarea,select{width:100%;padding:12px;background:#080a0d;color:white;border:1px solid #414c60;border-radius:8px;font-size:15px}
+textarea{min-height:75px;resize:vertical}
 .secondary{background:#28354a}
-.output{white-space:pre-wrap;line-height:1.6;color:#ddd;margin-top:15px;overflow-wrap:anywhere}
+.danger{background:#9d3434}
+.output{white-space:pre-wrap;line-height:1.6;overflow-wrap:anywhere;color:#ddd;margin-top:15px}
+.character{padding:14px;background:#080a0d;border:1px solid #343b50;border-radius:9px;margin-top:12px}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.actions button{font-size:12px;padding:9px}
 small{color:#999}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
 <header>
 <h1>MONEY TALKS ANIMATION STUDIO</h1>
-<p>Professional animation production workspace · Build 002</p>
+<p>Professional animation production workspace · BUILD 003</p>
 </header>
 <main>
 <nav>
-<button onclick="show('characters')">Characters</button>
-<button onclick="show('stories')">Stories</button>
-<button onclick="show('scenes')">Scene Builder</button>
+<button onclick="showTab('characters')">Characters</button>
+<button onclick="showTab('stories')">Stories</button>
+<button onclick="showTab('scenes')">Scene Builder</button>
 </nav>
 
 <section id="characters" class="card">
-<h2>01 / Character Studio</h2>
-<p>Create a reusable character identity for your animations.</p>
+<h2>01 / Character Management</h2>
+<p>Create and manage reusable animation characters.</p>
+
 <label>Character name</label>
-<input id="cname" placeholder="Example: Marcus">
-<label>Character type</label>
+<input id="cname" placeholder="Enter character name">
+
+<label>Animation style</label>
 <select id="ctype">
-<option>Minimalist stickman</option>
-<option>2D cartoon human</option>
-<option>3D animated human</option>
-<option>Custom character</option>
+<option value="Stickman">Stickman animation</option>
+<option value="Full cartoon">Full cartoon animation</option>
+<option value="3D cartoon">3D cartoon animation</option>
 </select>
-<label>Head and face</label>
-<textarea id="face" placeholder="Describe the head, face and expression"></textarea>
-<label>Body and clothing</label>
-<textarea id="body" placeholder="Describe body shape, clothing and accessories"></textarea>
+
+<label>Gender or character presentation</label>
+<input id="gender" placeholder="Describe character presentation">
+
+<label>Head and facial appearance</label>
+<textarea id="face" placeholder="Head shape, eyes, facial features, expression..."></textarea>
+
+<label>Body and proportions</label>
+<textarea id="body" placeholder="Height, build, body proportions..."></textarea>
+
+<label>Clothing and accessories</label>
+<textarea id="clothes" placeholder="Outfit, colours, shoes and accessories..."></textarea>
+
 <label>Personality</label>
-<textarea id="personality" placeholder="Describe the character's personality"></textarea>
-<button onclick="saveCharacter()">Save character</button>
-<button class="secondary" onclick="makeCharacterPrompt()">Generate identity prompt</button>
-<div id="characterOutput" class="output"></div>
-<div id="characterList" class="output"></div>
+<textarea id="personality" placeholder="Personality, attitude and behaviour..."></textarea>
+
+<label>Special identity details</label>
+<textarea id="details" placeholder="Unique features that must never change..."></textarea>
+
+<input type="hidden" id="editId">
+
+<div class="actions">
+<button onclick="saveCharacter()">Save Character</button>
+<button class="secondary" onclick="clearForm()">Clear Form</button>
+</div>
+
+<h3>Saved Characters</h3>
+<div id="characterList"></div>
 </section>
 
 <section id="stories" class="card" hidden>
 <h2>02 / Story Studio</h2>
 <label>Video title</label>
-<input id="title" placeholder="Enter your documentary title">
-<label>Target duration</label>
+<input id="title" placeholder="Enter video title">
+
+<label>Video duration</label>
 <select id="duration">
 <option>30 seconds</option>
 <option>60 seconds</option>
 <option>5 minutes</option>
 <option>10 minutes</option>
+<option>15 minutes</option>
 </select>
-<label>Story idea</label>
-<textarea id="idea" placeholder="Describe your video idea"></textarea>
-<button onclick="makeStory()">Create story brief</button>
+
+<label>Story concept</label>
+<textarea id="idea" placeholder="Describe the story you want to tell..."></textarea>
+
+<button onclick="makeStory()">Create Story Brief</button>
 <div id="storyOutput" class="output"></div>
 </section>
 
 <section id="scenes" class="card" hidden>
 <h2>03 / Scene Builder</h2>
+
+<label>Select saved character</label>
+<select id="selectedCharacter"></select>
+
 <label>Scene number</label>
-<input id="number" placeholder="Scene 01">
-<label>Scene description</label>
-<textarea id="description" placeholder="Describe what happens in this scene"></textarea>
-<label>Camera movement</label>
+<input id="sceneNumber" placeholder="Scene 01">
+
+<label>Scene action</label>
+<textarea id="sceneAction" placeholder="Describe what happens in the scene..."></textarea>
+
+<label>Location</label>
+<input id="location" placeholder="Where does the scene happen?">
+
+<label>Camera angle</label>
 <select id="camera">
-<option>Slow cinematic zoom</option>
-<option>Wide establishing shot</option>
+<option>Wide cinematic shot</option>
+<option>Medium shot</option>
 <option>Close-up</option>
+<option>Over-the-shoulder shot</option>
 <option>Tracking shot</option>
 <option>Static shot</option>
 </select>
+
 <label>Lighting and atmosphere</label>
-<textarea id="lighting" placeholder="Describe the lighting and mood"></textarea>
-<button onclick="makeScene()">Generate scene prompt</button>
+<textarea id="lighting" placeholder="Describe lighting, colours and mood..."></textarea>
+
+<button onclick="makeScene()">Generate Animation Prompt</button>
 <div id="sceneOutput" class="output"></div>
 </section>
 </main>
+
 <script>
-function show(id){
-['characters','stories','scenes'].forEach(x=>{
-document.getElementById(x).hidden=x!==id;
+const $ = id => document.getElementById(id);
+
+function getCharacters(){
+try{return JSON.parse(localStorage.getItem('mtCharacters')||'[]')}
+catch(e){return []}
+}
+
+function setCharacters(data){
+localStorage.setItem('mtCharacters',JSON.stringify(data));
+}
+
+function showTab(id){
+['characters','stories','scenes'].forEach(tab=>{
+$(tab).hidden=tab!==id;
+});
+if(id==='scenes') updateCharacterSelect();
+}
+
+function clearForm(){
+['cname','gender','face','body','clothes','personality','details','editId'].forEach(id=>$(id).value='');
+}
+
+function saveCharacter(){
+const name=$('cname').value.trim();
+if(!name){alert('Please enter a character name.');return;}
+
+const data={
+id:$('editId').value||String(Date.now()),
+name,
+type:$('ctype').value,
+gender:$('gender').value,
+face:$('face').value,
+body:$('body').value,
+clothes:$('clothes').value,
+personality:$('personality').value,
+details:$('details').value
+};
+
+let characters=getCharacters();
+const index=characters.findIndex(c=>c.id===data.id);
+
+if(index>=0) characters[index]=data;
+else characters.push(data);
+
+setCharacters(characters);
+clearForm();
+renderCharacters();
+updateCharacterSelect();
+alert('Character saved successfully!');
+}
+
+function renderCharacters(){
+const characters=getCharacters();
+$('characterList').innerHTML='';
+
+if(!characters.length){
+$('characterList').textContent='No characters saved yet.';
+return;
+}
+
+characters.forEach(c=>{
+const div=document.createElement('div');
+div.className='character';
+
+const heading=document.createElement('h3');
+heading.textContent=c.name+' — '+c.type;
+
+const description=document.createElement('p');
+description.textContent=c.face||'No facial description provided.';
+
+const actions=document.createElement('div');
+actions.className='actions';
+
+const edit=document.createElement('button');
+edit.textContent='Edit';
+edit.onclick=()=>editCharacter(c.id);
+
+const prompt=document.createElement('button');
+prompt.textContent='Identity Prompt';
+prompt.className='secondary';
+prompt.onclick=()=>characterPrompt(c);
+
+const remove=document.createElement('button');
+remove.textContent='Delete';
+remove.className='danger';
+remove.onclick=()=>deleteCharacter(c.id);
+
+actions.append(edit,prompt,remove);
+div.append(heading,description,actions);
+$('characterList').append(div);
 });
 }
-function saveCharacter(){
-let c={
-name:cname.value,type:ctype.value,face:face.value,
-body:body.value,personality:personality.value
+
+function editCharacter(id){
+const c=getCharacters().find(x=>x.id===id);
+if(!c)return;
+
+$('cname').value=c.name;
+$('ctype').value=c.type;
+$('gender').value=c.gender||'';
+$('face').value=c.face||'';
+$('body').value=c.body||'';
+$('clothes').value=c.clothes||'';
+$('personality').value=c.personality||'';
+$('details').value=c.details||'';
+$('editId').value=c.id;
+
+window.scrollTo(0,0);
+}
+
+function deleteCharacter(id){
+if(!confirm('Delete this character permanently?'))return;
+setCharacters(getCharacters().filter(c=>c.id!==id));
+renderCharacters();
+updateCharacterSelect();
+}
+
+function characterPrompt(c){
+const prompt=
+'CHARACTER IDENTITY REFERENCE\n\n'+
+'Name: '+c.name+
+'\nStyle: '+c.type+
+'\nPresentation: '+c.gender+
+'\nFace: '+c.face+
+'\nBody: '+c.body+
+'\nClothing: '+c.clothes+
+'\nPersonality: '+c.personality+
+'\nUnique details: '+c.details+
+'\n\nCONSISTENCY RULES:\n'+
+'Preserve the exact same character design in every shot. '+
+'Never change the face, proportions, clothing, colours or unique identity details. '+
+'Maintain visual continuity across all scenes.';
+
+$('characterList').dataset.prompt=prompt;
+showOutput('Character Identity Prompt',prompt);
+}
+
+function updateCharacterSelect(){
+const select=$('selectedCharacter');
+const current=select.value;
+select.innerHTML='<option value="">Choose a character</option>';
+
+getCharacters().forEach(c=>{
+const option=document.createElement('option');
+option.value=c.id;
+option.textContent=c.name+' ('+c.type+')';
+select.append(option);
+});
+select.value=current;
+}
+
+function showOutput(title,content){
+const box=document.createElement('div');
+box.className='character';
+
+const heading=document.createElement('h3');
+heading.textContent=title;
+
+const text=document.createElement('div');
+text.className='output';
+text.textContent=content;
+
+const copy=document.createElement('button');
+copy.textContent='Copy Prompt';
+copy.onclick=()=>{
+if(navigator.clipboard){
+navigator.clipboard.writeText(content)
+.then(()=>alert('Copied!'))
+.catch(()=>alert('Select and copy the text manually.'));
+}else alert('Select and copy the text manually.');
 };
-if(!c.name.trim()){alert('Enter a character name');return;}
-let list=JSON.parse(localStorage.getItem('mtCharacters')||'[]');
-list.push(c);
-localStorage.setItem('mtCharacters',JSON.stringify(list));
-characterList.textContent='Saved characters:\n'+list.map(x=>x.name+' — '+x.type).join('\n');
+
+box.append(heading,text,copy);
+$('sceneOutput').append(box);
 }
-function makeCharacterPrompt(){
-characterOutput.textContent=
-'CHARACTER IDENTITY PROMPT\n\nName: '+cname.value+
-'\nCharacter type: '+ctype.value+
-'\nFace: '+face.value+
-'\nBody and clothing: '+body.value+
-'\nPersonality: '+personality.value+
-'\n\nMaintain exactly the same character design, proportions, facial details, clothing and visual identity in every scene. Do not redesign or replace the character.';
-}
+
 function makeStory(){
-storyOutput.textContent='STORY PRODUCTION BRIEF\n\nTitle: '+title.value+
-'\nDuration: '+duration.value+
-'\nConcept: '+idea.value+
-'\n\nDevelop a compelling opening hook, logical story progression, engaging visual moments and a memorable conclusion.';
+const title=$('title').value.trim();
+const idea=$('idea').value.trim();
+if(!title||!idea){alert('Enter a title and story concept.');return;}
+
+$('storyOutput').textContent=
+'STORY PRODUCTION BRIEF\n\nTitle: '+title+
+'\nDuration: '+$('duration').value+
+'\nConcept: '+idea+
+'\n\nSTRUCTURE\n1. Powerful opening hook.\n2. Introduce the central problem.\n3. Develop the story.\n4. Reveal the important insight.\n5. Deliver a memorable conclusion.';
 }
+
 function makeScene(){
-sceneOutput.textContent='ANIMATION SCENE PROMPT\n\nScene: '+number.value+
-'\nAction: '+description.value+
-'\nCamera: '+camera.value+
-'\nLighting: '+lighting.value+
-'\n\nMaintain consistent character identity throughout the animation. Cinematic composition, smooth movement, clear storytelling and professional visual quality.';
+const id=$('selectedCharacter').value;
+const c=getCharacters().find(x=>x.id===id);
+if(!c){alert('Please select a saved character.');return;}
+
+const action=$('sceneAction').value.trim();
+if(!action){alert('Describe the scene action.');return;}
+
+const prompt=
+'ANIMATION PRODUCTION PROMPT\n\n'+
+'Scene: '+$('sceneNumber').value+
+'\nCharacter: '+c.name+
+'\nAnimation style: '+c.type+
+'\nCharacter appearance: '+c.face+'. '+c.body+
+'\nClothing: '+c.clothes+
+'\nUnique identity details: '+c.details+
+'\nScene action: '+action+
+'\nLocation: '+$('location').value+
+'\nCamera: '+$('camera').value+
+'\nLighting: '+$('lighting').value+
+'\n\nCONTINUITY: Preserve the exact character appearance, proportions, clothing and identity. Do not redesign the character. Maintain consistent visual style throughout the sequence.';
+
+$('sceneOutput').innerHTML='';
+showOutput('Generated Scene Prompt',prompt);
 }
-let saved=JSON.parse(localStorage.getItem('mtCharacters')||'[]');
-characterList.textContent=saved.length?'Saved characters:\n'+saved.map(x=>x.name+' — '+x.type).join('\n'):'No characters saved yet.';
+
+renderCharacters();
+updateCharacterSelect();
 </script>
 </body>
 </html>
